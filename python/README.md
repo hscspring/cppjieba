@@ -3,6 +3,8 @@ Fork [yanyiwu/cppjieba: "结巴" 中文分词的 C++ 版本](https://github.com/
 ## Install
 
 ```bash
+$ pip install cppjieba
+# or
 $ git clone https://github.com/hscspring/cppjieba.git
 $ cd cppjieba
 $ pip install .

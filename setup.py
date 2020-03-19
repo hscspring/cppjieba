@@ -14,6 +14,7 @@ from __future__ import unicode_literals
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+from pathlib import Path
 import sys
 import setuptools
 import os
@@ -22,8 +23,9 @@ import platform
 import io
 
 __version__ = '0.1'
-JIEBA_SRC = "include"
-JIEBA_DEPS_SRC = "deps"
+# JIEBA_DICT_ROOT = "dict"
+JIEBA_SRC_ROOT = "include"
+JIEBA_DEPS_SRC_ROOT = "deps"
 
 # Based on https://github.com/facebookresearch/fastText
 
@@ -55,12 +57,18 @@ else:
     del sys.argv[coverage_index]
     coverage = True
 
-# jieba_src_files = map(str, os.listdir(JIEBA_SRC))
-# jieba_src_cc = list(filter(lambda x: x.endswith('.cc'), jieba_src_files))
 
-# jieba_src_cc = list(
-#     map(lambda x: str(os.path.join(JIEBA_SRC, x)), jieba_src_cc)
-# )
+# jieba_dict_path = Path(JIEBA_DICT_ROOT)
+# jieba_dict_files = list(map(str, jieba_dict_path.glob('*.utf8')))
+# jieba_pos_dict_path = Path(JIEBA_DICT_ROOT) / "pos_dict"
+# jieba_pos_dict_files = list(map(str, jieba_pos_dict_path.glob('*.utf8')))
+
+jieba_src_path = Path(JIEBA_SRC_ROOT) / "cppjieba"
+jieba_src_files = list(map(str, jieba_src_path.glob('*.hpp')))
+
+jieba_deps_path = Path(JIEBA_DEPS_SRC_ROOT) / "limonp"
+jieba_deps_src_files = list(map(str, jieba_deps_path.glob('*.hpp')))
+
 
 ext_modules = [
     Extension(
@@ -73,8 +81,8 @@ ext_modules = [
             get_pybind_include(),
             get_pybind_include(user=True),
             # Path to cppjieba source code
-            JIEBA_SRC,
-            JIEBA_DEPS_SRC,
+            JIEBA_SRC_ROOT,
+            JIEBA_DEPS_SRC_ROOT,
         ],
         language='c++',
         extra_compile_args=["-O0 -fno-inline -fprofile-arcs -pthread -march=native" if coverage else
@@ -163,7 +171,7 @@ def _get_readme():
     Use pandoc to generate rst from md.
     pandoc --from=markdown --to=rst --output=python/README.rst python/README.md
     """
-    with io.open("README.md", encoding='utf-8') as fid:
+    with io.open("python/README.md", encoding='utf-8') as fid:
         return fid.read()
 
 
@@ -173,9 +181,10 @@ setup(
     author='Yam',
     author_email='haoshaochun@gmail.com',
     description='cppjieba Python bindings',
+    long_description_content_type='text/markdown',
     long_description=_get_readme(),
     ext_modules=ext_modules,
-    url='https://https://github.com/hscspring/cppjieba',
+    url='https://github.com/hscspring/cppjieba',
     license='MIT',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -200,8 +209,13 @@ setup(
         "cppjieba",
     ],
     package_dir={"": "python/cppjieba_module"},
-    package_data={
-        "cppjieba": ["dict/*", "dict/pos_dict/*"],
-    },
+    # use MANIFEST.in
+    # package_data={
+    #     'cppjieba': ["dict/*", "dict/pos_dict/*"],
+    # },
+    # data_files=[
+    #     ('cppjieba/include/cppjieba', jieba_src_files),
+    #     ('cppjieba/deps/limonp', jieba_deps_src_files),
+    # ],
     zip_safe=False,
 )
