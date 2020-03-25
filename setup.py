@@ -22,7 +22,7 @@ import subprocess
 import platform
 import io
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 # JIEBA_DICT_ROOT = "dict"
 JIEBA_SRC_ROOT = "include"
 JIEBA_DEPS_SRC_ROOT = "deps"
@@ -213,9 +213,9 @@ setup(
     # package_data={
     #     'cppjieba': ["dict/*", "dict/pos_dict/*"],
     # },
-    # data_files=[
-    #     ('cppjieba/include/cppjieba', jieba_src_files),
-    #     ('cppjieba/deps/limonp', jieba_deps_src_files),
-    # ],
+    data_files=[
+        ('cppjieba/include/cppjieba', jieba_src_files),
+        ('cppjieba/deps/limonp', jieba_deps_src_files),
+    ],
     zip_safe=False,
 )
